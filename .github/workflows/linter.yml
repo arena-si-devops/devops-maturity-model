@@ -1,0 +1,39 @@
+name: Lint using super-linter
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+permissions: read-all 
+
+jobs:
+  lint:
+    name: Lint using super-linter
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      statuses: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          #   ref: main
+          fetch-depth: 0
+
+      - name: Super-linter
+        uses: super-linter/super-linter@v7.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #   DISABLE_ERRORS: true
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_YAML: false
+          VALIDATE_YAML_PRETTIER: false
+          VALIDATE_JSCPD: false

@@ -1,0 +1,135 @@
+name: DevOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: write
+    
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        # checkov:skip=CKV2_GHA_1:Ignore write-all permissions for security events
+
+      - name: Generate SBOM
+        run: echo "Generating SBOM..." # Placeholder for SBOM generation command
+
+      - name: Create SBOM with Trivy
+        uses: aquasecurity/trivy-action@0.29.0
+        with:
+          scan-type: fs
+          format: cyclonedx
+          output: sbom.json
+
+      - name: Install Syft
+        run: |
+          mkdir -p metadata
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v2.5.0
+          
+      - name: Install Chainloop CLI
+        run: |
+          echo "Installing  Chainloop CLI ... "
+          curl -sfL https://docs.chainloop.dev/install.sh | bash -s -- --force-verification
+          export PATH=$PATH:$HOME/.chainloop/bin
+          chainloop version
+          echo "Chainloop CLI installed successfully"
+
+      - name: Initialize Attestation
+        run: |
+          echo "Initializing Chainloop attestation..."
+          chainloop attestation init --workflow  devops-maturity-assessment-gha --project  devops-maturity-assessment --token ${{ secrets.CHAINLOOP_TOKEN }}
+    
+      - name: View Chainloop Current Configuration
+        run: |
+          echo "Chainloop set up workflow..."
+          chainloop config view 
+
+      - name: Package Application
+        run: echo "Packaging application..." # Placeholder for containerization command
+
+      - name: Get Release SHA and Move Files
+        run: |
+          echo ${{ github.sha }} > Release.txt
+          ls -al
+          mkdir release
+          mv Release.txt release/
+          mv sbom.json release/
+
+      - name: Push Artifacts
+        run: |
+          echo "Pushing artifacts..."
+          chainloop attestation status --full
+          chainloop att add --value release/Release.txt --token ${{ secrets.CHAINLOOP_TOKEN }}
+          chainloop att add --value release/sbom.json --token ${{ secrets.CHAINLOOP_TOKEN }}
+          chainloop attestation push --token ${{ secrets.CHAINLOOP_TOKEN }}
+        env: 
+            CHAINLOOP_TOKEN: ${{ secrets.CHAINLOOP_TOKEN }}          
+
+      - name: Create Release Tag
+        id: create_tag
+        run: |
+          # shellcheck disable=SC2086 
+          echo "Creating double quoted tag to avoid shellcheck issues..."
+          export tag_name="v1.0.${{ github.run_number }}" 
+          echo "tag_name=$tag_name" >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create Release and Push    
+        run: |
+          # shellcheck disable=SC2086
+          git tag "$tag_name" 
+          git push origin "$tag_name" 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch Tags
+        run: |
+          git fetch --tags
+
+      - name: Generate Changelog
+        run: echo "# Release-${{ env.tag_name }}" > release/CHANGELOG.txt  
+
+      - name: Create GitHub Release
+        run: | 
+          gh release create "${{ env.tag_name }}" release/Release.txt release/sbom.json --title "${{ env.tag_name }}" --notes-file release/CHANGELOG.txt 
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
