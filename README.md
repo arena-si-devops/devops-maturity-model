@@ -8,7 +8,7 @@ Rapid prototype application with integration to Chainloop.  Initially AI generat
 
 
 ## Demo 
-We want to demo a developer flow using a modern AI solution such as Bolt.diy where the AI bot can look at a repo, inventory the code and create a workflow that does the following:
+We want to demo a developer flow using a modern AI solution such as Bolt.diy where the AI bot can look at a repository, inventory the code and create a workflow that does the following:
  - inventory
  - source code checkout
  - set up a build environment
