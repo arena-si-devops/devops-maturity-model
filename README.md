@@ -4,7 +4,17 @@
 | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [![Lint using super-linter](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml) | [![DevOps Pipeline](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml) |
 
-Rapid prototype application with integration to Chainloop. Initially AI generated with [Bolt.diy](https://github.com/stackblitz-labs/bolt.diy) and [Copilot](https://copilot.microsoft.com/)
+## DevOps Maturity Assessment Tool
+DevOps Maturity Assessment offers the means to gather information about the current state of capabilities, methodologies and practices.
+
+It offers the means to identify areas of improvement.
+
+It should outline the steps required to achieve desired state towards DevOps maturity assessment goals.
+
+## Purpose of this Application
+This is a rapid prototype application with integration to Chainloop. 
+
+It was initially AI generated with [Bolt.diy](https://github.com/stackblitz-labs/bolt.diy) and [Copilot](https://copilot.microsoft.com/).
 
 ## Demo
 
