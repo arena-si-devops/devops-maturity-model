@@ -1,8 +1,6 @@
 # devops-maturity-assessment
 
-|                                                                                                                                                                                                                      |                                                                                                                                                                                                                                |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [![Lint using super-linter](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml) | [![DevOps Pipeline](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml) |
+[![Lint using super-linter](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/linter.yml) [![DevOps Pipeline](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml/badge.svg)](https://github.com/arena-si-devops/devops-maturity-model/actions/workflows/devops-pipeline.yml)
 
 ## DevOps Maturity Assessment Tool
 
